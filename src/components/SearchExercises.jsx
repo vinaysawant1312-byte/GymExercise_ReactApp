@@ -4,23 +4,50 @@ import HorizontalScrollBar from "./HorizontalScrollBar";
 const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [bodyParts, setBodyParts] = useState([]);
+
   useEffect(() => {
     const fetchExerciseData = async () => {
-      const exercisesData = await fetchData(
-        `https://exercisedb.p.rapidapi.com/exercises/bodyPartList`,
+      const bodyPartsData = await fetchData(
+        `/api/exercises/bodyPartList`,
         exerciseOption,
       );
-      setBodyParts(exercisesData);
+
+      setBodyParts(["all", ...bodyPartsData]);
     };
     fetchExerciseData();
   }, []);
+
   const handleSearch = async () => {
     if (searchTerm) {
-      const exercisesData = await fetchData(
-        `https://exercisedb.p.rapidapi.com/exercises`,
-        exerciseOption,
-      );
-      const SearchExercises = exercisesData.filter(
+      // Fetch all exercises with pagination for searching
+      let allExercisesData = [];
+      let offset = 0;
+      const pageSize = 10;
+      let hasMore = true;
+
+      while (hasMore) {
+        try {
+          const pageData = await fetchData(
+            `/api/exercises?offset=${offset}`,
+            exerciseOption,
+          );
+          if (pageData && pageData.length > 0) {
+            allExercisesData = [...allExercisesData, ...pageData];
+            if (pageData.length < pageSize) {
+              hasMore = false;
+            } else {
+              offset += pageSize;
+            }
+          } else {
+            hasMore = false;
+          }
+        } catch (error) {
+          console.error("Error fetching exercises:", error);
+          hasMore = false;
+        }
+      }
+
+      const SearchExercises = allExercisesData.filter(
         (exercise) =>
           exercise.name.toLowerCase().includes(searchTerm) ||
           exercise.target.toLowerCase().includes(searchTerm) ||

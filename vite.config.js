@@ -1,8 +1,38 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [react(), tailwindcss()],
+export default defineConfig(({ mode }) => {
+  // load .env files for the current mode so VITE_ vars are available
+  const env = loadEnv(mode, process.cwd(), "");
+
+  return {
+    plugins: [react(), tailwindcss()],
+    server: {
+      proxy: {
+        // Proxy `/api/*` to the RapidAPI exercisedb host to avoid CORS in development
+        "/api": {
+          target: "https://exercisedb.p.rapidapi.com",
+          changeOrigin: true,
+          secure: true,
+          // Inject RapidAPI headers from environment for dev requests
+          headers: {
+            "x-rapidapi-key": env.VITE_RAPID_API_KEY || "",
+            "x-rapidapi-host": "exercisedb.p.rapidapi.com",
+          },
+          // Rewrite path then ensure proxied responses allow our dev origin
+          rewrite: (path) => path.replace(/^\/api/, ""),
+          configure: (proxy) => {
+            // Intercept the proxy response and set a permissive CORS header for dev
+            proxy.on("proxyRes", (proxyRes) => {
+              if (proxyRes && proxyRes.headers) {
+                proxyRes.headers["access-control-allow-origin"] = "*";
+              }
+            });
+          },
+        },
+      },
+    },
+  };
 });

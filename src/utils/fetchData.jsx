@@ -8,8 +8,17 @@ export const exerciseOption = {
   },
 };
 
-export const fetchData = async (url, options) => {
-  const response = await fetch(url, options);
-  const data = await response.json();
-  return data;
+export const fetchData = async (url, options = {}) => {
+  // Allow callers to request non-JSON responses (e.g. images) by
+  // passing a `returnType` property on the `options` object.
+  const { returnType, ...fetchOptions } = options;
+
+  const response = await fetch(url, fetchOptions);
+  if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+
+  if (returnType === "blob") {
+    return await response.blob();
+  }
+
+  return await response.json();
 };

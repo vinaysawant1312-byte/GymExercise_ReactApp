@@ -21,16 +21,16 @@ const HorizontalScrollBar = ({ data, bodyPart, setBodyPart }) => {
   };
 
   return (
-    <div className="flex items-center gap-2 w-full mt-50">
+    <div className="flex items-center gap-2 w-full mt-50 ">
       <button onClick={scrollLeft} className="p-2 bg-gray-200 rounded ml-10">
         <ChevronLeft />
       </button>
 
-      <div ref={scrollRef} className="flex gap-4 overflow-x-auto w-full">
+      <div ref={scrollRef} className="flex gap-4 overflow-x-auto w-full  ">
         {items.map((item) => (
           <div
             key={item.id || item}
-            className="min-w-50 h-40 bg-blue-500 flex items-center justify-center text-white rounded-lg"
+            className="min-w-50 h-40 bg-white flex items-center justify-cente rounded-lg  "
             title={item.id || item}
           >
             <BodyPart
@@ -40,11 +40,6 @@ const HorizontalScrollBar = ({ data, bodyPart, setBodyPart }) => {
             />
           </div>
         ))}
-
-        <div className="min-w-50 h-40 bg-red-500"></div>
-        <div className="min-w-50 h-40 bg-green-500"></div>
-        <div className="min-w-50 h-40 bg-yellow-500"></div>
-        <div className="min-w-50 h-40 bg-purple-500"></div>
       </div>
 
       <button onClick={scrollRight} className="p-2 bg-gray-200 rounded mr-10">
