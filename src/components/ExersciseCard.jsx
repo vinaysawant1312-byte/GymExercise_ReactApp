@@ -32,13 +32,13 @@ const ExerciseCard = ({ exercise }) => {
   }, [exercise.id]);
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-3 hover:shadow-lg hover:scale-105 transition-shadow mt-40">
-      <div className="w-full h-110 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
+    <div className="bg-white rounded-lg  hover:scale-105 transition-shadow mt-30 border-t-4 border-red-500">
+      <div className="w-full h-70 rounded-md overflow-hidden flex items-center justify-center">
         {imageUrl ? (
           <img
             src={imageUrl}
             alt={exercise.name}
-            className="w-full h-full object-cover"
+            className="w-70 h-70 object-cover"
           />
         ) : (
           <div className="w-28 h-28 bg-gray-200 animate-pulse rounded-md" />

@@ -9,7 +9,6 @@ function App() {
   return (
     <>
       <Navbar />
-
       <Home />
       <ExeciseDetail />
       <Footer />
