@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { exerciseOption, fetchData } from "../utils/fetchData";
 import ExerciseCard from "./ExersciseCard";
 import BodyPart from "./BodyPart";
@@ -61,22 +62,26 @@ const Exercises = ({ exercises, setExercises, bodyPart }) => {
 
   return (
     <>
-      <h1> SHOWING RESULTS</h1>
-      <div className="px-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-18">
-          {currentExercises.map((exercise, index) => (
-            <ExerciseCard key={index} exercise={exercise} />
-          ))}
+      <section id="exercises" className="scroll-smooth">
+        <h1> SHOWING RESULTS</h1>
+        <div className="px-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-18">
+            {currentExercises.map((exercise, index) => (
+              <Link to={`/exercise-detail/${exercise.id}`}>
+                <ExerciseCard key={index} exercise={exercise} />
+              </Link>
+            ))}
+          </div>
         </div>
-      </div>
-      <div className="mt-15">
-        <Pagination
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          totalExercises={exercises.length}
-          itemsPerPage={itemsPerPage}
-        />
-      </div>
+        <div className="mt-15">
+          <Pagination
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            totalExercises={exercises.length}
+            itemsPerPage={itemsPerPage}
+          />
+        </div>
+      </section>
     </>
   );
 };

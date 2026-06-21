@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import Exercises from "./Exercises";
-import HeroBanner from "./HeroBanner";
-import SearchExercises from "./SearchExercises";
+import Exercises from "../components/Exercises";
+import HeroBanner from "../components/HeroBanner";
+import SearchExercises from "../components/SearchExercises";
 import { fetchData, exerciseOption } from "../utils/fetchData";
 
 const Home = () => {

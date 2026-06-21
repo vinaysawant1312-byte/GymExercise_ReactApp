@@ -1,16 +1,33 @@
-import "./App.css";
+import { Routes, Route } from "react-router-dom";
 
-import Home from "./components/Home";
+import Home from "./Pages/Home";
 import ExeciseDetail from "./components/ExeciseDetail";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import BMI from "./pages/BMI";
 
 function App() {
   return (
     <>
       <Navbar />
-      <Home />
-      <ExeciseDetail />
+
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <Home />
+            </>
+          }
+        />
+        <Route
+          path="/exercise-detail/:exerciseId"
+          element={<ExeciseDetail />}
+        />
+
+        <Route path="/bmi" element={<BMI />} />
+      </Routes>
+
       <Footer />
     </>
   );

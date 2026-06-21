@@ -1,7 +1,12 @@
+import Detail from "./Detail";
+import ExerciseVideos from "./ExerciseVideos";
+import SimilarExercises from "./SimilarExercises";
 const ExeciseDetail = () => {
   return (
     <>
-      <div>boss</div>
+      <Detail />
+      <ExerciseVideos />
+      <SimilarExercises />
     </>
   );
 };
