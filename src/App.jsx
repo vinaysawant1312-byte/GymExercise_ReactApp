@@ -20,10 +20,7 @@ function App() {
             </>
           }
         />
-        <Route
-          path="/exercise-detail/:exerciseId"
-          element={<ExeciseDetail />}
-        />
+        <Route path="/exercise-detail/:id" element={<ExeciseDetail />} />
 
         <Route path="/bmi" element={<BMI />} />
       </Routes>

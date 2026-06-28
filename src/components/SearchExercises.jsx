@@ -60,7 +60,7 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
   };
   return (
     <>
-      <h1 className="text-center text-6xl py-20 mx-90 font-semibold i">
+      <h1 className="text-center text-6xl py-20  font-semibold i">
         Awesome Exercise You Should Know
       </h1>
       <div className="mt-6 flex  justify-center mx-80">

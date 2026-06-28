@@ -1,5 +1,5 @@
 const SimilarExercises = () => {
-  return <div>SimilarExercises</div>;
+  return <div>hiiiii</div>;
 };
 
 export default SimilarExercises;

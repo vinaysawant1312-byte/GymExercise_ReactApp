@@ -1,5 +1,5 @@
 // Load mock server FIRST before anything else
-import "./mocks/mockServer.js";
+
 import { BrowserRouter } from "react-router-dom";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";

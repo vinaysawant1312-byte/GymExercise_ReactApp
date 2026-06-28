@@ -14,7 +14,6 @@ const ExerciseCard = ({ exercise }) => {
           `/api/image?exerciseId=${exercise.id}&resolution=180`,
           { ...exerciseOption, returnType: "blob" },
         );
-        console.log(blob);
 
         objectUrl = URL.createObjectURL(blob);
         if (mounted) setImageUrl(objectUrl);
@@ -22,7 +21,6 @@ const ExerciseCard = ({ exercise }) => {
         console.error("Failed to load exercise image:", err);
       }
     };
-
     loadImage();
 
     return () => {

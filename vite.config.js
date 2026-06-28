@@ -9,6 +9,30 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react(), tailwindcss()],
-    server: {},
+    server: {
+      proxy: {
+        // Proxy `/api/*` to the RapidAPI exercisedb host to avoid CORS in development
+        "/api": {
+          target: "https://exercisedb.p.rapidapi.com",
+          changeOrigin: true,
+          secure: true,
+          // Inject RapidAPI headers from environment for dev requests
+          headers: {
+            "x-rapidapi-key": env.VITE_RAPID_API_KEY || "",
+            "x-rapidapi-host": "exercisedb.p.rapidapi.com",
+          },
+          // Rewrite path then ensure proxied responses allow our dev origin
+          rewrite: (path) => path.replace(/^\/api/, ""),
+          configure: (proxy) => {
+            // Intercept the proxy response and set a permissive CORS header for dev
+            proxy.on("proxyRes", (proxyRes) => {
+              if (proxyRes && proxyRes.headers) {
+                proxyRes.headers["access-control-allow-origin"] = "*";
+              }
+            });
+          },
+        },
+      },
+    },
   };
 });
