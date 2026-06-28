@@ -2,19 +2,21 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { exerciseOption, fetchData } from "../utils/fetchData";
 import ExerciseCard from "./ExersciseCard";
-import BodyPart from "./BodyPart";
 import Pagination from "./Pagination";
+
 const Exercises = ({ exercises, setExercises, bodyPart }) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false);
   const itemsPerPage = 9;
+
   useEffect(() => {
     const fetchExercisesData = async () => {
+      setLoading(true);
       let allExerciseData = [];
       let offset = 0;
       const pageSize = 10;
       let hasMore = true;
 
-      // Fetch all pages until we get less than 10 items (meaning end of results)
       while (hasMore) {
         let pageData = [];
         try {
@@ -32,12 +34,8 @@ const Exercises = ({ exercises, setExercises, bodyPart }) => {
 
           if (pageData && pageData.length > 0) {
             allExerciseData = [...allExerciseData, ...pageData];
-            // If we got less than 10 items, we've reached the end
-            if (pageData.length < pageSize) {
-              hasMore = false;
-            } else {
-              offset += pageSize;
-            }
+            if (pageData.length < pageSize) hasMore = false;
+            else offset += pageSize;
           } else {
             hasMore = false;
           }
@@ -48,10 +46,12 @@ const Exercises = ({ exercises, setExercises, bodyPart }) => {
       }
 
       setExercises(allExerciseData);
+      setLoading(false);
     };
+
     fetchExercisesData();
   }, [bodyPart, setExercises]);
-  // reset to first page when exercises change (e.g., new search/bodyPart)
+
   useEffect(() => {
     setCurrentPage(1);
   }, [exercises]);
@@ -61,19 +61,57 @@ const Exercises = ({ exercises, setExercises, bodyPart }) => {
   const currentExercises = exercises.slice(indexOfFirst, indexOfLast);
 
   return (
-    <>
-      <section id="exercises" className="scroll-smooth">
-        <h1> SHOWING RESULTS</h1>
-        <div className="px-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-18">
-            {currentExercises.map((exercise, index) => (
-              <Link to={`/exercise-detail/${exercise.id}`}>
-                <ExerciseCard key={index} exercise={exercise} />
-              </Link>
-            ))}
-          </div>
+    <section
+      id="exercises"
+      className="scroll-smooth px-4 md:px-10 py-10 max-w-screen-xl mx-auto"
+    >
+      {/* Heading */}
+      <div className="flex items-center gap-3 mb-8">
+        <div className="w-1.5 h-8 bg-orange-500 rounded-full" />
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+          Showing <span className="text-orange-500">Results</span>
+        </h2>
+      </div>
+
+      {/* Loading Skeleton */}
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 9 }).map((_, i) => (
+            <div
+              key={i}
+              className="bg-gray-100 rounded-2xl h-72 animate-pulse"
+            />
+          ))}
         </div>
-        <div className="mt-15">
+      ) : currentExercises.length === 0 ? (
+        /* Empty State */
+        <div className="flex flex-col items-center justify-center py-24 text-center">
+          <p className="text-5xl mb-4">🏋️</p>
+          <p className="text-gray-500 text-lg font-medium">
+            No exercises found
+          </p>
+          <p className="text-gray-400 text-sm mt-1">
+            Try selecting a different body part
+          </p>
+        </div>
+      ) : (
+        /* Exercise Grid */
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {currentExercises.map((exercise) => (
+            <Link
+              to={`/exercise-detail/${exercise.id}`}
+              key={exercise.id}
+              className="group"
+            >
+              <ExerciseCard exercise={exercise} />
+            </Link>
+          ))}
+        </div>
+      )}
+
+      {/* Pagination */}
+      {!loading && exercises.length > itemsPerPage && (
+        <div className="mt-12">
           <Pagination
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
@@ -81,8 +119,8 @@ const Exercises = ({ exercises, setExercises, bodyPart }) => {
             itemsPerPage={itemsPerPage}
           />
         </div>
-      </section>
-    </>
+      )}
+    </section>
   );
 };
 

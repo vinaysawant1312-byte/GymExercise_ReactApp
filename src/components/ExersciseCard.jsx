@@ -14,7 +14,6 @@ const ExerciseCard = ({ exercise }) => {
           `/api/image?exerciseId=${exercise.id}&resolution=180`,
           { ...exerciseOption, returnType: "blob" },
         );
-
         objectUrl = URL.createObjectURL(blob);
         if (mounted) setImageUrl(objectUrl);
       } catch (err) {
@@ -30,29 +29,54 @@ const ExerciseCard = ({ exercise }) => {
   }, [exercise.id]);
 
   return (
-    <div className="bg-white rounded-lg  hover:scale-105 transition-shadow mt-30 border-t-4 border-red-500">
-      <div className="w-full h-70 rounded-md overflow-hidden flex items-center justify-center">
+    <div
+      className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl 
+                    hover:-translate-y-1 transition-all duration-300 
+                    border-t-4 border-orange-500 w-full max-w-xs mx-auto"
+    >
+      {/* Image Area */}
+      <div className="w-full h-48 md:h-56 bg-gray-50 flex items-center justify-center overflow-hidden">
         {imageUrl ? (
           <img
             src={imageUrl}
             alt={exercise.name}
-            className="w-70 h-70 object-cover"
+            className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-28 h-28 bg-gray-200 animate-pulse rounded-md" />
+          <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
         )}
       </div>
-      <div className="mt-3">
-        <button className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 ">
-          {exercise.bodyPart}
-        </button>
-        <button className="bg-yellow-500 text-white py-2 px-4 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 ml-2">
-          {" "}
-          {exercise.target}
-        </button>
-        <h3 className="text-sm font-semibold text-gray-900 truncate">
+
+      {/* Content Area */}
+      <div className="p-4 space-y-3">
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2">
+          <span
+            className="bg-red-100 text-red-600 text-xs font-semibold 
+                           px-3 py-1 rounded-full capitalize"
+          >
+            {exercise.bodyPart}
+          </span>
+          <span
+            className="bg-yellow-100 text-yellow-600 text-xs font-semibold 
+                           px-3 py-1 rounded-full capitalize"
+          >
+            {exercise.target}
+          </span>
+        </div>
+
+        {/* Exercise Name */}
+        <h3
+          className="text-sm md:text-base font-bold text-gray-800 capitalize
+                       leading-snug line-clamp-2"
+        >
           {exercise.name}
         </h3>
+
+        {/* View Detail hint */}
+        <p className="text-xs text-orange-500 font-medium tracking-wide">
+          View Details →
+        </p>
       </div>
     </div>
   );

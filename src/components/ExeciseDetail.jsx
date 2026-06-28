@@ -8,7 +8,13 @@ import { useParams } from "react-router-dom";
 const ExerciseDetail = () => {
   const [exerciseDetail, setExerciseDetail] = useState({});
   const [exerciseVideos, setExerciseVideos] = useState([]);
+  const [targetMuscleExercises, setTargetMuscleExercises] = useState([]);
+  const [equipmentExercises, setEquipmentExercises] = useState([]);
   const { id } = useParams();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [id]);
 
   useEffect(() => {
     const fetchExerciseData = async () => {
@@ -27,6 +33,19 @@ const ExerciseDetail = () => {
         youtubeOptions,
       );
       setExerciseVideos(exerciseVideoData.contents);
+      const targetMuscleExerciseData = await fetchData(
+        `${exerciseDbUrl}/exercises/target/${exerciseDetailData.target}`,
+        exerciseOption,
+      );
+
+      setTargetMuscleExercises(targetMuscleExerciseData);
+
+      const eqiupmentExerciseData = await fetchData(
+        `${exerciseDbUrl}/exercises/equipment/${exerciseDetailData.equipment}`,
+        exerciseOption,
+      );
+
+      setEquipmentExercises(eqiupmentExerciseData);
     };
 
     fetchExerciseData();
@@ -39,7 +58,10 @@ const ExerciseDetail = () => {
         exerciseVideos={exerciseVideos}
         name={exerciseDetail.name}
       />
-      <SimilarExercises />
+      <SimilarExercises
+        targetMuscleExercises={targetMuscleExercises}
+        equipmentExercises={equipmentExercises}
+      />
     </div>
   );
 };
