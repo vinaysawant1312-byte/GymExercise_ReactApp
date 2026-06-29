@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { exerciseOption, fetchData } from "../utils/fetchData";
 import HorizontalScrollBar from "./HorizontalScrollBar";
+
 const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [bodyParts, setBodyParts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchExerciseData = async () => {
@@ -11,86 +13,123 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
         `/api/exercises/bodyPartList`,
         exerciseOption,
       );
-
       setBodyParts(["all", ...bodyPartsData]);
     };
     fetchExerciseData();
   }, []);
 
   const handleSearch = async () => {
-    if (searchTerm) {
-      // Fetch all exercises with pagination for searching
-      let allExercisesData = [];
-      let offset = 0;
-      const pageSize = 10;
-      let hasMore = true;
+    if (!searchTerm) return;
+    setIsLoading(true);
 
-      while (hasMore) {
-        try {
-          const pageData = await fetchData(
-            `/api/exercises?offset=${offset}`,
-            exerciseOption,
-          );
-          if (pageData && pageData.length > 0) {
-            allExercisesData = [...allExercisesData, ...pageData];
-            if (pageData.length < pageSize) {
-              hasMore = false;
-            } else {
-              offset += pageSize;
-            }
-          } else {
-            hasMore = false;
-          }
-        } catch (error) {
-          console.error("Error fetching exercises:", error);
+    let allExercisesData = [];
+    let offset = 0;
+    const pageSize = 10;
+    let hasMore = true;
+
+    while (hasMore) {
+      try {
+        const pageData = await fetchData(
+          `/api/exercises?offset=${offset}`,
+          exerciseOption,
+        );
+        if (pageData && pageData.length > 0) {
+          allExercisesData = [...allExercisesData, ...pageData];
+          hasMore = pageData.length >= pageSize;
+          offset += pageSize;
+        } else {
           hasMore = false;
         }
+      } catch (error) {
+        console.error("Error fetching exercises:", error);
+        hasMore = false;
       }
-
-      const SearchExercises = allExercisesData.filter(
-        (exercise) =>
-          exercise.name.toLowerCase().includes(searchTerm) ||
-          exercise.target.toLowerCase().includes(searchTerm) ||
-          exercise.equipment.toLowerCase().includes(searchTerm) ||
-          exercise.bodyPart.toLowerCase().includes(searchTerm),
-      );
-      setSearchTerm("");
-      setExercises(SearchExercises);
     }
+
+    const filtered = allExercisesData.filter(
+      (exercise) =>
+        exercise.name.toLowerCase().includes(searchTerm) ||
+        exercise.target.toLowerCase().includes(searchTerm) ||
+        exercise.equipment.toLowerCase().includes(searchTerm) ||
+        exercise.bodyPart.toLowerCase().includes(searchTerm),
+    );
+
+    setSearchTerm("");
+    setExercises(filtered);
+    setIsLoading(false);
   };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleSearch();
+  };
+
   return (
-    <>
-      <h1 className="text-center text-6xl py-20  font-semibold i">
-        Awesome Exercise You Should Know
-      </h1>
-      <div className="mt-6 flex  justify-center mx-80">
+    <section className="w-full">
+      {/* Hero heading */}
+      <div className="text-center py-16 px-4">
+        <p className="text-orange-500 text-sm font-semibold tracking-widest uppercase mb-3">
+          Your Fitness Guide
+        </p>
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+          Awesome Exercises You <br className="hidden sm:block" />
+          <span className="text-orange-500">Should Know</span>
+        </h1>
+        <p className="mt-4 text-gray-500 text-base md:text-lg max-w-xl mx-auto">
+          Search over 1,300 exercises by name, muscle, or equipment.
+        </p>
+      </div>
+
+      {/* Search bar */}
+      <div className="flex items-center max-w-2xl mx-auto px-4 gap-0 shadow-md rounded-xl overflow-hidden border border-gray-200 bg-white">
+        <span className="pl-4 text-gray-400">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"
+            />
+          </svg>
+        </span>
         <input
           id="search"
           name="search"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
+          onKeyDown={handleKeyDown}
           type="text"
-          required
-          placeholder="Search exercises..."
-          autoComplete="email"
-          className="min-w-0 flex-auto rounded-md bg-white/5 px-3.5 py-2.5 text-base text-blackoutline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-red-500 sm:text-sm/6 border-2"
+          placeholder="Search by name, muscle, or equipment..."
+          className="flex-1 px-4 py-4 text-sm text-gray-800 placeholder:text-gray-400
+                     bg-transparent outline-none border-none focus:ring-0"
         />
         <button
-          type="submit"
-          className="flex-none  rounded-md bg-red-500 px-3.5 py-2.5  font-semibold text-white shadow-xs hover:bg-red-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 text-2xl"
           onClick={handleSearch}
+          disabled={isLoading}
+          className="bg-orange-500 hover:bg-orange-600 active:bg-orange-700
+                     text-white font-semibold text-sm px-6 py-4
+                     transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed
+                     whitespace-nowrap"
         >
-          Search
+          {isLoading ? "Searching..." : "Search"}
         </button>
       </div>
 
-      <HorizontalScrollBar
-        data={bodyParts}
-        bodyPart={bodyPart}
-        setBodyPart={setBodyPart}
-        isBodyParts
-      />
-    </>
+      {/* Body part scroll */}
+      <div className="mt-10">
+        <HorizontalScrollBar
+          data={bodyParts}
+          bodyPart={bodyPart}
+          setBodyPart={setBodyPart}
+          isBodyParts
+        />
+      </div>
+    </section>
   );
 };
 

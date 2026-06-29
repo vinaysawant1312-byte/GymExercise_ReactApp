@@ -52,7 +52,7 @@ const ExerciseDetail = () => {
   }, [id]);
 
   return (
-    <div className="max-w-5xl mx-auto px-6">
+    <div>
       <Detail exerciseDetail={exerciseDetail} />
       <ExerciseVideos
         exerciseVideos={exerciseVideos}

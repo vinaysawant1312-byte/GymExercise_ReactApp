@@ -1,33 +1,51 @@
 import Logo from "../assets/images/Logo.png";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
+  const { pathname } = useLocation();
+
+  const links = [
+    { to: "/", label: "Home" },
+    { to: "/bmi", label: "BMI Calculator" },
+  ];
+
   return (
-    <div className="flex items-center bg-amber-200 px-6 py-4 md:px-20">
-      <div className="shrink-0">
-        <img src={Logo} alt="Logo" className="h-16 w-16 md:h-20 md:w-20" />
-      </div>
+    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
+      <div className="max-w-7xl mx-auto px-6 md:px-10 py-3 flex items-center justify-between">
+        {/* Logo */}
+        <Link to="/" className="flex items-center gap-3 shrink-0">
+          <img
+            src={Logo}
+            alt="FitForge Logo"
+            className="h-12 w-12 object-contain"
+          />
+          <span className="text-xl font-bold text-gray-900 hidden sm:block">
+            Fit<span className="text-orange-500">Forge</span>
+          </span>
+        </Link>
 
-      <div className="flex-1">
-        <div className="flex justify-start gap-9 text-2xl md:ml-10 px-10">
-          <Link
-            to="/"
-            className="text-gray-800 underline decoration-red-500 hover:text-gray-500"
-          >
-            Home
-          </Link>
-
-          <Link
-            to="/bmi"
-            className="text-gray-800 underline decoration-red-500 hover:text-gray-500"
-          >
-            BMI Calculator
-          </Link>
+        {/* Nav Links */}
+        <div className="flex items-center gap-2">
+          {links.map(({ to, label }) => {
+            const isActive = pathname === to;
+            return (
+              <Link
+                key={to}
+                to={to}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                            ${
+                              isActive
+                                ? "bg-orange-500 text-white shadow-sm"
+                                : "text-gray-600 hover:bg-orange-50 hover:text-orange-500"
+                            }`}
+              >
+                {label}
+              </Link>
+            );
+          })}
         </div>
       </div>
-
-      <div className="hidden w-16 md:block" />
-    </div>
+    </nav>
   );
 };
 

@@ -40,7 +40,7 @@ const ExerciseCard = ({ exercise }) => {
           <img
             src={imageUrl}
             alt={exercise.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
