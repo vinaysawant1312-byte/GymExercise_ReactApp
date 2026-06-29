@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import BodyPart from "./BodyPart";
-import ExerciseCard from "./ExersciseCard";
+import ExerciseCard from "./ExerciseCard";
 
 const HorizontalScrollBar = ({ data, bodyPart, setBodyPart, isBodyParts }) => {
   const scrollRef = useRef(null);
