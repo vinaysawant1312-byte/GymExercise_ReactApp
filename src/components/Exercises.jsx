@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { exerciseOption, fetchData } from "../utils/fetchData";
-import ExerciseCard from "./ExersciseCard";
+import ExerciseCard from "./ExerciseCard";
 import Pagination from "./Pagination";
 
 const Exercises = ({ exercises, setExercises, bodyPart }) => {
